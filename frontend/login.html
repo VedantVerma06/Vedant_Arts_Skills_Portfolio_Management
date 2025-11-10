@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Vedant Verma Portfolio</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-card">
+            <h1>Welcome Back</h1>
+            <p class="text-center" style="margin-bottom: 2rem; color: var(--text-secondary);">
+                Sign in to continue to your portfolio
+            </p>
+
+            <!-- Google OAuth Login -->
+            <button id="google-login-btn" class="google-btn">
+                <i class="fab fa-google"></i>
+                Continue with Google
+            </button>
+
+            <div class="login-divider">OR</div>
+
+            <!-- Admin Login Form -->
+            <form id="admin-login-form">
+                <div class="form-group">
+                    <label for="admin-email" class="form-label">Admin Email</label>
+                    <input type="email" id="admin-email" class="form-input" required placeholder="admin@example.com">
+                </div>
+                <div class="form-group">
+                    <label for="admin-password" class="form-label">Password</label>
+                    <input type="password" id="admin-password" class="form-input" required placeholder="Enter password">
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">
+                    Admin Login
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <script src="assets/js/config.js"></script>
+    <script src="assets/js/auth.js"></script>
+</body>
+</html>
+

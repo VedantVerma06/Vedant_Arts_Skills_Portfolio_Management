@@ -15,12 +15,27 @@ router.get('/google', passport.authenticate('google', { scope: ['profile', 'emai
 
 // Google OAuth callback
 router.get('/google/callback',
-  passport.authenticate('google', { session: false, failureRedirect: `${process.env.FRONTEND_URL}/auth-failure` }),
+  passport.authenticate('google', { session: false, failureRedirect: `${process.env.FRONTEND_URL || 'http://localhost:8000'}/auth-failure` }),
   (req, res) => {
-    // user is set on req.user
-    const token = jwt.sign({ id: req.user._id, role: req.user.role }, process.env.JWT_SECRET, { expiresIn: '7d' });
-    // redirect to frontend with token
-    res.redirect(`${process.env.FRONTEND_URL}/auth-success?token=${token}`);
+    try {
+      // Check if JWT_SECRET is set
+      if (!process.env.JWT_SECRET) {
+        console.error('❌ JWT_SECRET is not set in environment variables');
+        return res.redirect(`${process.env.FRONTEND_URL || 'http://localhost:8000'}/auth-failure?error=jwt_secret_missing`);
+      }
+
+      // user is set on req.user
+      if (!req.user) {
+        return res.redirect(`${process.env.FRONTEND_URL || 'http://localhost:8000'}/auth-failure?error=user_not_found`);
+      }
+
+      const token = jwt.sign({ id: req.user._id, role: req.user.role || 'user' }, process.env.JWT_SECRET, { expiresIn: '7d' });
+      // redirect to frontend with token
+      res.redirect(`${process.env.FRONTEND_URL || 'http://localhost:8000'}/auth-success?token=${token}`);
+    } catch (error) {
+      console.error('❌ Error in Google OAuth callback:', error);
+      res.redirect(`${process.env.FRONTEND_URL || 'http://localhost:8000'}/auth-failure?error=${encodeURIComponent(error.message)}`);
+    }
   }
 );
 

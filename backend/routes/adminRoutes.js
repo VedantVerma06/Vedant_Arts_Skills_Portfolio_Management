@@ -13,23 +13,53 @@ const router = express.Router();
 
 /* 🔐 Admin Login */
 router.post("/login", async (req, res) => {
-  const { email, password } = req.body;
+  try {
+    const { email, password } = req.body;
 
-  if (email !== process.env.ADMIN_EMAIL || password !== process.env.ADMIN_PASSWORD) {
-    return res.status(401).json({ message: "Invalid admin credentials" });
+    // Check if JWT_SECRET is set
+    if (!process.env.JWT_SECRET) {
+      console.error('❌ JWT_SECRET is not set in environment variables');
+      return res.status(500).json({ 
+        success: false,
+        message: "Server configuration error: JWT_SECRET is not set. Please check your .env file." 
+      });
+    }
+
+    // Check if admin credentials are set
+    if (!process.env.ADMIN_EMAIL || !process.env.ADMIN_PASSWORD) {
+      return res.status(500).json({ 
+        success: false,
+        message: "Server configuration error: Admin credentials are not set. Please check your .env file." 
+      });
+    }
+
+    if (email !== process.env.ADMIN_EMAIL || password !== process.env.ADMIN_PASSWORD) {
+      return res.status(401).json({ 
+        success: false,
+        message: "Invalid admin credentials" 
+      });
+    }
+
+    const token = jwt.sign(
+      { id: "admin_unique_id", role: "admin", email },
+      process.env.JWT_SECRET,
+      { expiresIn: "6h" }
+    );
+
+    res.json({
+      success: true,
+      message: "Admin login successful ✅",
+      token,
+      admin: { email, role: "admin" },
+    });
+  } catch (error) {
+    console.error('❌ Error in admin login:', error);
+    res.status(500).json({ 
+      success: false,
+      message: "Server error during login",
+      error: error.message 
+    });
   }
-
-  const token = jwt.sign(
-    { id: "admin_unique_id", role: "admin", email },
-    process.env.JWT_SECRET,
-    { expiresIn: "6h" }
-  );
-
-  res.json({
-    message: "Admin login successful ✅",
-    token,
-    admin: { email, role: "admin" },
-  });
 });
 
 /* 🧾 Get Admin Profile / Settings */

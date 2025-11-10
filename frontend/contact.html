@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact & Services - Vedant Verma</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+    <!-- Sidebar Navigation -->
+    <nav class="sidebar">
+        <a href="index.html" class="sidebar-item">
+            <i class="fas fa-home"></i>
+            <span>Home</span>
+        </a>
+        <a href="about.html" class="sidebar-item">
+            <i class="fas fa-user"></i>
+            <span>About</span>
+        </a>
+        <a href="gallery.html" class="sidebar-item">
+            <i class="fas fa-images"></i>
+            <span>Gallery</span>
+        </a>
+        <a href="contact.html" class="sidebar-item active">
+            <i class="fas fa-envelope"></i>
+            <span>Contact</span>
+        </a>
+        <a href="orders.html" class="sidebar-item" id="orders-nav" style="display: none;">
+            <i class="fas fa-shopping-cart"></i>
+            <span>My Orders</span>
+        </a>
+        <a href="admin-dashboard.html" class="sidebar-item" id="admin-nav" style="display: none;">
+            <i class="fas fa-cog"></i>
+            <span>Admin</span>
+        </a>
+        <a href="#" class="sidebar-item" id="logout-btn" style="display: none;">
+            <i class="fas fa-sign-out-alt"></i>
+            <span>Logout</span>
+        </a>
+    </nav>
+
+    <!-- Theme Toggle -->
+    <button class="theme-toggle" id="theme-toggle">
+        <i class="fas fa-moon"></i>
+    </button>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <h1 style="margin-bottom: 2rem;">Contact & Services</h1>
+        <div class="contact-container">
+            <div>
+                <img id="contact-image" src="" alt="Contact" class="contact-image" style="display: none;">
+            </div>
+            <div>
+                <div class="contact-info" id="contact-info">
+                    <!-- Contact info will be loaded here -->
+                </div>
+                <div class="card" style="margin-top: 2rem;">
+                    <h2 class="card-header">Commission Services</h2>
+                    <table class="commission-table" id="commission-table">
+                        <thead>
+                            <tr>
+                                <th>Size</th>
+                                <th>Price</th>
+                            </tr>
+                        </thead>
+                        <tbody id="commission-tbody">
+                            <!-- Commission pricing will be loaded here -->
+                        </tbody>
+                    </table>
+                    <div style="margin-top: 2rem; text-align: center;">
+                        <a href="orders.html" class="btn btn-primary">
+                            <i class="fas fa-shopping-cart"></i> Order Now
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="assets/js/config.js"></script>
+    <script src="assets/js/auth.js"></script>
+    <script src="assets/js/contact.js"></script>
+    <script>
+        // Theme toggle
+        document.getElementById('theme-toggle').addEventListener('click', () => {
+            const theme = utils.toggleTheme();
+            const icon = document.querySelector('#theme-toggle i');
+            icon.className = theme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+        });
+
+        // Show/hide navigation based on auth
+        document.addEventListener('DOMContentLoaded', () => {
+            if (utils.isAuthenticated()) {
+                document.getElementById('logout-btn').style.display = 'flex';
+                
+                if (utils.isAdmin()) {
+                    document.getElementById('admin-nav').style.display = 'flex';
+                } else {
+                    document.getElementById('orders-nav').style.display = 'flex';
+                }
+            }
+        });
+    </script>
+</body>
+</html>
+

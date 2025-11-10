@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Authentication Failed</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-card text-center">
+            <h2 style="color: var(--danger);">❌ Authentication Failed</h2>
+            <p style="margin-top: 1rem; color: var(--text-secondary);">
+                There was an error during authentication. This might be due to:
+            </p>
+            <ul style="text-align: left; margin: 1rem 0; color: var(--text-secondary);">
+                <li>Missing or incorrect JWT_SECRET in backend .env file</li>
+                <li>Google OAuth configuration issues</li>
+                <li>Backend server not running</li>
+                <li>MongoDB connection issues</li>
+            </ul>
+            <div id="error-details" style="margin-top: 1rem; padding: 1rem; background: var(--bg-secondary); border-radius: 8px; display: none;">
+                <strong>Error Details:</strong>
+                <p id="error-message" style="margin-top: 0.5rem; color: var(--danger);"></p>
+            </div>
+            <p style="margin-top: 1rem; color: var(--text-secondary);">
+                Please check the backend server logs and ensure all environment variables are set correctly.
+                See <code>backend/SOLUTION.md</code> for setup instructions.
+            </p>
+            <a href="login.html" class="btn btn-primary" style="margin-top: 2rem;">
+                <i class="fas fa-arrow-left"></i> Back to Login
+            </a>
+        </div>
+    </div>
+
+    <script src="assets/js/config.js"></script>
+    <script>
+        // Display error details if present in URL
+        document.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const error = urlParams.get('error');
+            
+            if (error) {
+                const errorDetails = document.getElementById('error-details');
+                const errorMessage = document.getElementById('error-message');
+                
+                if (errorDetails && errorMessage) {
+                    errorDetails.style.display = 'block';
+                    errorMessage.textContent = decodeURIComponent(error);
+                    
+                    // Provide helpful messages for common errors
+                    if (error === 'jwt_secret_missing') {
+                        errorMessage.innerHTML = `
+                            <strong>JWT_SECRET is missing!</strong><br>
+                            Please create a .env file in the backend directory and add:<br>
+                            <code>JWT_SECRET=your_random_secret_key_here</code><br>
+                            See backend/SOLUTION.md for instructions.
+                        `;
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
+

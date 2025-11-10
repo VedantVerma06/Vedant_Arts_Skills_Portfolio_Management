@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Orders - Vedant Verma</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+    <!-- Sidebar Navigation -->
+    <nav class="sidebar">
+        <a href="index.html" class="sidebar-item">
+            <i class="fas fa-home"></i>
+            <span>Home</span>
+        </a>
+        <a href="about.html" class="sidebar-item">
+            <i class="fas fa-user"></i>
+            <span>About</span>
+        </a>
+        <a href="gallery.html" class="sidebar-item">
+            <i class="fas fa-images"></i>
+            <span>Gallery</span>
+        </a>
+        <a href="contact.html" class="sidebar-item">
+            <i class="fas fa-envelope"></i>
+            <span>Contact</span>
+        </a>
+        <a href="orders.html" class="sidebar-item active" id="orders-nav">
+            <i class="fas fa-shopping-cart"></i>
+            <span>My Orders</span>
+        </a>
+        <a href="admin-dashboard.html" class="sidebar-item" id="admin-nav" style="display: none;">
+            <i class="fas fa-cog"></i>
+            <span>Admin</span>
+        </a>
+        <a href="#" class="sidebar-item" id="logout-btn">
+            <i class="fas fa-sign-out-alt"></i>
+            <span>Logout</span>
+        </a>
+    </nav>
+
+    <!-- Theme Toggle -->
+    <button class="theme-toggle" id="theme-toggle">
+        <i class="fas fa-moon"></i>
+    </button>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+            <h1>My Orders</h1>
+            <a href="orders.html?new=true" class="btn btn-primary">
+                <i class="fas fa-plus"></i> New Order
+            </a>
+        </div>
+
+        <!-- Order Form (shown when ?new=true) -->
+        <div id="order-form-container" style="display: none;">
+            <div class="card">
+                <h2 class="card-header">Place New Order</h2>
+                <form id="order-form">
+                    <div class="form-group">
+                        <label for="order-name" class="form-label">Name *</label>
+                        <input type="text" id="order-name" class="form-input" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="order-email" class="form-label">Email *</label>
+                        <input type="email" id="order-email" class="form-input" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="order-size" class="form-label">Size *</label>
+                        <input type="text" id="order-size" class="form-input" required placeholder="e.g., 12x16 inches">
+                    </div>
+                    <div class="form-group">
+                        <label for="order-budget" class="form-label">Budget *</label>
+                        <input type="number" id="order-budget" class="form-input" required placeholder="Enter budget in USD">
+                    </div>
+                    <div class="form-group">
+                        <label for="order-deadline" class="form-label">Deadline *</label>
+                        <input type="date" id="order-deadline" class="form-input" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="order-description" class="form-label">Description *</label>
+                        <textarea id="order-description" class="form-textarea" required placeholder="Describe your commission request..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="order-images" class="form-label">Reference Images (Optional)</label>
+                        <div class="file-upload-area" id="file-upload-area">
+                            <i class="fas fa-cloud-upload-alt" style="font-size: 2rem; margin-bottom: 1rem;"></i>
+                            <p>Click or drag images here to upload</p>
+                            <input type="file" id="order-images" multiple accept="image/*" style="display: none;">
+                        </div>
+                        <div class="uploaded-images" id="uploaded-images"></div>
+                    </div>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-paper-plane"></i> Place Order
+                    </button>
+                    <button type="button" class="btn btn-secondary" id="cancel-order-form">
+                        Cancel
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Orders List -->
+        <div id="orders-list">
+            <div class="loader"></div>
+        </div>
+    </main>
+
+    <!-- Success Modal -->
+    <div class="modal" id="success-modal">
+        <div class="modal-content" style="max-width: 400px; text-align: center;">
+            <h2>🎨 Order Placed Successfully!</h2>
+            <p>Your order has been submitted. You will receive a confirmation email shortly.</p>
+            <button class="btn btn-primary" id="close-success-modal">OK</button>
+        </div>
+    </div>
+
+    <script src="assets/js/config.js"></script>
+    <script src="assets/js/auth.js"></script>
+    <script src="assets/js/orders.js"></script>
+    <script>
+        // Theme toggle
+        document.getElementById('theme-toggle').addEventListener('click', () => {
+            const theme = utils.toggleTheme();
+            const icon = document.querySelector('#theme-toggle i');
+            icon.className = theme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+        });
+
+        // Check authentication
+        document.addEventListener('DOMContentLoaded', () => {
+            if (!utils.isAuthenticated()) {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            if (utils.isAdmin()) {
+                document.getElementById('admin-nav').style.display = 'flex';
+            }
+        });
+
+        // Check if new order form should be shown
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('new') === 'true') {
+            document.getElementById('order-form-container').style.display = 'block';
+            document.getElementById('orders-list').style.display = 'none';
+        }
+    </script>
+</body>
+</html>
+
