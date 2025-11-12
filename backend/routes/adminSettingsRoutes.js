@@ -1,6 +1,6 @@
 // routes/adminSettingsRoutes.js
 const express = require("express");
-const { protect, adminOnly } = require("../middleware/authmiddleware");
+const { protect, adminOnly } = require("../middleware/authMiddleware");
 const { upload } = require("../middleware/upload");
 const {
   getSettings,
