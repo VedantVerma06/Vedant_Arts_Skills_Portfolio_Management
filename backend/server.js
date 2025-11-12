@@ -40,27 +40,31 @@ app.use(express.urlencoded({ extended: true }));
 // CORS Configuration - Allow multiple origins
 const allowedOrigins = [
   process.env.FRONTEND_URL,
-  'http://localhost:8000',
-  'http://localhost:3000',
-  'http://127.0.0.1:8000',
-  'http://127.0.0.1:3000',
+  "http://127.0.0.1:5500",
+  "http://localhost:5500",
+  "http://localhost:3000",
+  "http://127.0.0.1:3000",
+  "http://localhost:8000",
+  "http://127.0.0.1:8000",
 ].filter(Boolean);
 
 app.use(
   cors({
     origin: function (origin, callback) {
-      // Allow requests with no origin (like mobile apps or curl requests)
+      // Allow requests with no origin (e.g., mobile apps or curl)
       if (!origin) return callback(null, true);
-      if (allowedOrigins.indexOf(origin) !== -1 || process.env.FRONTEND_URL === '*') {
+
+      if (allowedOrigins.includes(origin)) {
+        // ✅ Allow if origin is in our list
         callback(null, true);
       } else {
-        console.log(`CORS: Blocked origin: ${origin}`);
-        callback(null, true); // Allow all for development
+        console.log(`🚫 CORS blocked request from origin: ${origin}`);
+        callback(new Error("CORS not allowed for this origin"));
       }
     },
     credentials: true,
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
 

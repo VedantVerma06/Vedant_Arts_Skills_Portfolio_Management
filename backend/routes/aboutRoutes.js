@@ -9,3 +9,4 @@ router.get("/", getAbout);
 router.put("/", protect, adminOnly, upload.single("image"), updateAbout);
 
 module.exports = router;
+

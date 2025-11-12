@@ -1,6 +1,6 @@
 // routes/adminSettingsRoutes.js
 const express = require("express");
-const { protect, adminOnly } = require("../middleware/authMiddleware");
+const { protect, adminOnly } = require("../middleware/authmiddleware");
 const { upload } = require("../middleware/upload");
 const {
   getSettings,
@@ -22,3 +22,4 @@ router.post("/funfact", protect, adminOnly, addFunFact);
 router.delete("/funfact/:factId", protect, adminOnly, deleteFunFact);
 
 module.exports = router;
+

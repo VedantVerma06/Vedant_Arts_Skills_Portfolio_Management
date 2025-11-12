@@ -1,6 +1,6 @@
 const express = require("express");
 const { upload } = require("../middleware/upload");
-const { protect, adminOnly } = require("../middleware/authMiddleware");
+const { protect, adminOnly } = require("../middleware/authmiddleware");
 const {
   addArtwork,
   editArtwork,
@@ -25,3 +25,4 @@ router.delete("/:artworkId/comment/:commentId", protect, adminOnly, deleteCommen
 router.delete("/:id", protect, adminOnly, deleteArtwork);
 
 module.exports = router;
+

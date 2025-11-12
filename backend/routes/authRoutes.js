@@ -14,27 +14,43 @@ router.post('/login', loginUser);
 router.get('/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
 
 // Google OAuth callback
-router.get('/google/callback',
-  passport.authenticate('google', { session: false, failureRedirect: `${process.env.FRONTEND_URL || 'http://localhost:8000'}/auth-failure` }),
+router.get(
+  '/google/callback',
+  passport.authenticate('google', {
+    session: false,
+    failureRedirect: `${process.env.FRONTEND_URL}/auth-failure.html`,
+  }),
   (req, res) => {
     try {
-      // Check if JWT_SECRET is set
+      // 🔍 Debug: check JWT secret
       if (!process.env.JWT_SECRET) {
         console.error('❌ JWT_SECRET is not set in environment variables');
-        return res.redirect(`${process.env.FRONTEND_URL || 'http://localhost:8000'}/auth-failure?error=jwt_secret_missing`);
+        return res.redirect(`${process.env.FRONTEND_URL}/auth-failure.html?error=jwt_secret_missing`);
       }
 
-      // user is set on req.user
+      // 🔍 Debug: check user
       if (!req.user) {
-        return res.redirect(`${process.env.FRONTEND_URL || 'http://localhost:8000'}/auth-failure?error=user_not_found`);
+        console.error('❌ Google user not found after authentication');
+        return res.redirect(`${process.env.FRONTEND_URL}/auth-failure.html?error=user_not_found`);
       }
 
-      const token = jwt.sign({ id: req.user._id, role: req.user.role || 'user' }, process.env.JWT_SECRET, { expiresIn: '7d' });
-      // redirect to frontend with token
-      res.redirect(`${process.env.FRONTEND_URL || 'http://localhost:8000'}/auth-success?token=${token}`);
+      // ✅ Generate JWT token
+      const token = jwt.sign(
+        { id: req.user._id, role: req.user.role || 'user' },
+        process.env.JWT_SECRET,
+        { expiresIn: '7d' }
+      );
+
+      // 🧩 Debug logs — IMPORTANT
+      console.log('✅ Google OAuth successful!');
+      console.log('🧠 Generated Token:', token);
+      console.log('🔗 Redirecting to:', `${process.env.FRONTEND_URL}/auth-success.html?token=${token}`);
+
+      // ✅ Redirect to frontend with token
+      res.redirect(`${process.env.FRONTEND_URL}/auth-success.html?token=${token}`);
     } catch (error) {
       console.error('❌ Error in Google OAuth callback:', error);
-      res.redirect(`${process.env.FRONTEND_URL || 'http://localhost:8000'}/auth-failure?error=${encodeURIComponent(error.message)}`);
+      res.redirect(`${process.env.FRONTEND_URL}/auth-failure.html?error=${encodeURIComponent(error.message)}`);
     }
   }
 );

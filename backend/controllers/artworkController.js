@@ -19,9 +19,9 @@ exports.addArtwork = async (req, res) => {
 
     if (!req.file) return res.status(400).json({ message: "Image required" });
 
-    const uploaded = await cloudinary.uploader.upload(req.file.path, {
-      folder: "vedant_artworks",
-    });
+    // ✅ No need to upload manually — multer-storage-cloudinary already did it
+    const imageUrl = req.file.path; // Cloudinary URL from multer
+    console.log("✅ Cloudinary image URL:", imageUrl);
 
     const artwork = await Artwork.create({
       title,
@@ -33,11 +33,12 @@ exports.addArtwork = async (req, res) => {
       sizeMedium,
       isForSale: isForSale || false,
       isAvailable: isForSale || false,
-      imageUrl: uploaded.secure_url,
+      imageUrl,
     });
 
     res.status(201).json({ message: "Artwork added ✅", artwork });
   } catch (err) {
+    console.error("❌ addArtwork error:", err);
     res.status(500).json({ message: err.message });
   }
 };
@@ -53,20 +54,19 @@ exports.editArtwork = async (req, res) => {
 
     Object.assign(artwork, updates);
 
-    // If new image uploaded
+    // ✅ Replace old image if new one uploaded
     if (req.file) {
-      const uploaded = await cloudinary.uploader.upload(req.file.path, {
-        folder: "vedant_artworks",
-      });
-      artwork.imageUrl = uploaded.secure_url;
+      artwork.imageUrl = req.file.path; // Cloudinary URL
     }
 
     await artwork.save();
     res.json({ message: "Artwork updated ✅", artwork });
   } catch (err) {
+    console.error("❌ editArtwork error:", err);
     res.status(500).json({ message: err.message });
   }
 };
+
 
 /* 🧭 Get all artworks (public, with filters) */
 exports.getArtworks = async (req, res) => {
@@ -153,3 +153,4 @@ exports.deleteArtwork = async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 };
+

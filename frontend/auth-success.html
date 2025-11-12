@@ -1,22 +1,63 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Authenticating...</title>
-    <link rel="stylesheet" href="assets/css/style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Authenticating...</title>
+  <link rel="stylesheet" href="assets/css/style.css" />
 </head>
 <body>
-    <div class="login-container">
-        <div class="login-card text-center">
-            <div class="loader"></div>
-            <h2>Authenticating...</h2>
-            <p>Please wait while we log you in.</p>
-        </div>
+  <div class="login-container">
+    <div class="login-card text-center">
+      <div class="loader"></div>
+      <h2>Authenticating...</h2>
+      <p>Please wait while we log you in.</p>
     </div>
+  </div>
 
-    <script src="assets/js/config.js"></script>
-    <script src="assets/js/auth.js"></script>
+  <script>
+    window.addEventListener("load", () => {
+      console.log("🌀 auth-success.html loaded");
+
+      // 1️⃣ Get token from URL
+      const params = new URLSearchParams(window.location.search);
+      const token = params.get("token");
+      console.log("🔍 URL token:", token);
+
+      // 2️⃣ Validate token
+      if (token && token.trim() !== "") {
+        // Save to localStorage
+        localStorage.setItem("jwt_token", token);
+        console.log("✅ Token saved to localStorage:", token);
+
+        // Decode token for debugging
+        try {
+          const payload = JSON.parse(atob(token.split(".")[1]));
+          console.log("🧠 Token payload:", payload);
+        } catch (e) {
+          console.warn("⚠️ Invalid token payload");
+        }
+
+        // Show success message
+        document.querySelector(".login-card").innerHTML = `
+          <h2>Login Successful ✅</h2>
+          <p>Redirecting you to the homepage...</p>
+        `;
+
+        // Redirect after delay
+        setTimeout(() => {
+          window.location.href = "index.html";
+        }, 2000);
+      } else {
+        // 3️⃣ No token received
+        console.error("❌ No token found in URL!");
+        document.querySelector(".login-card").innerHTML = `
+          <h2>Authentication Failed ❌</h2>
+          <p>No token received. Please try again.</p>
+          <a href="login.html" class="btn btn-primary">Go Back</a>
+        `;
+      }
+    });
+  </script>
 </body>
 </html>
-

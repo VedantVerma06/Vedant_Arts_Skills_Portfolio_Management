@@ -11,28 +11,32 @@ const emailTemplates = require("../utils/emailTemplates");
  */
 const placeOrder = async (req, res) => {
   try {
-    const userId = req.user._id;
-    const { size, description, budget, deadline } = req.body;
+    const user = req.user; // ✅ already fetched from middleware
+    const { type, size, description, budget, deadline } = req.body;
 
-    if (!size || !description || !budget || !deadline) {
-      return res.status(400).json({ message: "All fields are required." });
+    if (!type || !description) {
+      return res.status(400).json({ message: "Type and description are required." });
     }
 
     const order = await Order.create({
-      user: userId,
-      size,
-      description,
-      budget,
-      deadline,
-      status: "pending",
-    });
+    userId: user._id,
+      userName: user.username,   // ✅ correct
+    userEmail: user.email,
+    type,
+    size,
+    description,
+    budget,
+    deadline,
+    status: "pending",
+  });
+
 
     res.status(201).json({
-      message: "Order placed successfully ✅",
+      message: "✅ Order placed successfully!",
       order,
     });
   } catch (err) {
-    console.error("Order creation failed:", err);
+    console.error("❌ Order creation failed:", err);
     res.status(500).json({ message: "Server error", error: err.message });
   }
 };

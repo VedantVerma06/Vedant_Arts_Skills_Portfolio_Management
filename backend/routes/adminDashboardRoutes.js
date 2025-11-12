@@ -29,3 +29,4 @@ router.post("/funfact", protect, adminOnly, addFunFact);
 router.delete("/funfact/:id", protect, adminOnly, deleteFunFact);
 
 module.exports = router;
+

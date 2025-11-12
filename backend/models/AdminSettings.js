@@ -31,3 +31,4 @@ const adminSettingsSchema = new mongoose.Schema({
 }, { timestamps: true });
 
 module.exports = mongoose.model("AdminSettings", adminSettingsSchema);
+

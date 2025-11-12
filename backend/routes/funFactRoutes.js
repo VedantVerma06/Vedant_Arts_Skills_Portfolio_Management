@@ -10,3 +10,4 @@ router.post('/', protect, adminOnly, addFunFact);
 router.delete('/:id', protect, adminOnly, deleteFunFact);
 
 module.exports = router;
+

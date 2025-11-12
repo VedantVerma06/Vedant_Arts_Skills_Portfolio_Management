@@ -6,3 +6,4 @@ const aboutSchema = new mongoose.Schema({
 }, { timestamps: true });
 
 module.exports = mongoose.model('About', aboutSchema);
+
