@@ -1,6 +1,6 @@
 const express = require("express");
 const { upload } = require("../middleware/upload");
-const { protect, adminOnly } = require("../middleware/authmiddleware");
+const { protect, adminOnly } = require("../middleware/authMiddleware");
 const {
   addArtwork,
   editArtwork,
